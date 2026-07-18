@@ -98,11 +98,25 @@ class Configuration:
 
     def save(self) -> None:
         CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+        try:
+            CONFIG_DIR.chmod(0o700)
+        except OSError:
+            pass
         payload = asdict(self)
+        # Never persist API keys in configuration.json.
         payload.pop("openai_api_key", None)
         temporary = CONFIG_PATH.with_suffix(".tmp")
         temporary.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
         temporary.replace(CONFIG_PATH)
+        try:
+            CONFIG_PATH.chmod(0o600)
+        except OSError:
+            pass
+        if SECRETS_PATH.exists():
+            try:
+                SECRETS_PATH.chmod(0o600)
+            except OSError:
+                pass
 
     def secrets_path(self) -> Path:
         return SECRETS_PATH

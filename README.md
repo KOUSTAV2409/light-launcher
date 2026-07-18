@@ -2,6 +2,24 @@
 
 Linux launcher inspired by Spotlight and Raycast. Built with Python 3 + GTK 3.
 
+**Status:** early public MVP / alpha. Expect rough edges.
+
+## Security & API keys
+
+Light does **not** ship with anyone’s OpenAI key. Installing or cloning this repo
+cannot expose the author’s keys.
+
+- API keys live only on **each user’s machine**:
+  - `~/.config/light/secrets.json` (mode `0600`), or
+  - the `OPENAI_API_KEY` environment variable
+- Keys are **never** written to `configuration.json`, the git repo, Preferences UI storage, or usage metrics
+- Config dir is kept private (`~/.config/light` → `0700`)
+- OpenAI is optional and off by default — without a key, apps/files/actions still work
+
+**Do not** commit `secrets.json`, paste keys into issues/PRs, or share screenshots that show a live key.
+
+See `SECURITY.md` for the short security policy.
+
 ## MVP features
 
 - Floating search window (GTK 3)
@@ -13,7 +31,7 @@ Linux launcher inspired by Spotlight and Raycast. Built with Python 3 + GTK 3.
 - Arrow keys, Tab, Enter, Escape navigation
 - System tray icon
 - Wayland-safe compositor shortcut plus optional `keyboard` fallback
-- Streaming OpenAI answers with source citations
+- Streaming OpenAI answers with source citations (your own API key)
 - Opt-in local clipboard history and process-isolated extensions
 
 ## Requirements
@@ -112,11 +130,13 @@ depending on provider and update timing.
 
 
 Light can answer questions like Google’s AI Overview using **OpenAI Responses API + `web_search`**.
+This uses **your** OpenAI account and quota — Light never embeds a shared key.
 
-1. Create secrets file (recommended — do not commit this):
+1. Create a local secrets file (never commit this file):
 
 ```bash
 mkdir -p ~/.config/light
+chmod 700 ~/.config/light
 cat > ~/.config/light/secrets.json <<'EOF'
 {
   "openai_api_key": "sk-your-key-here"
@@ -248,4 +268,13 @@ See `VALIDATION.md` for the real-user validation workflow before paid features.
 - File search without `fd`/`find`/`plocate` is slower on large home folders
 - Flatpak build requires `flatpak-builder` and the GNOME 48 runtime locally
 - Power actions may need polkit permissions
-- OpenAI web search uses your API quota (Responses API + web_search tool)
+- OpenAI web search uses **your** API quota (Responses API + web_search tool)
+
+## License
+
+Copyright (C) 2026 Koustav Ganguly (KOUSTAV2409).
+
+Light is free software under the **GNU General Public License v3** (or later).
+See [`LICENSE`](LICENSE) for the full terms.
+
+Inspired by ideas from [Snap](https://github.com/techrisdev/Snap) (also GPL-3.0).

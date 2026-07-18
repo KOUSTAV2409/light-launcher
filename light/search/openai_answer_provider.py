@@ -37,7 +37,11 @@ class RequestCancelled(Exception):
 
 
 def resolve_openai_api_key(config: Configuration) -> str:
-    """Prefer env, then secrets file, then configuration.json."""
+    """Resolve the user's own API key. Never ships with Light.
+
+    Order: OPENAI_API_KEY env → ~/.config/light/secrets.json
+    Keys are never read from configuration.json or the git repo.
+    """
     placeholders = {"", "PASTE_YOUR_OPENAI_API_KEY_HERE"}
 
     env_key = os.environ.get("OPENAI_API_KEY", "").strip()
@@ -47,6 +51,11 @@ def resolve_openai_api_key(config: Configuration) -> str:
     secrets_path = config.secrets_path()
     if secrets_path.exists():
         try:
+            # Keep the file owner-readable only when present.
+            secrets_path.chmod(0o600)
+        except OSError:
+            pass
+        try:
             data = json.loads(secrets_path.read_text(encoding="utf-8"))
             key = str(data.get("openai_api_key", "")).strip()
             if key not in placeholders:
@@ -54,8 +63,7 @@ def resolve_openai_api_key(config: Configuration) -> str:
         except (OSError, json.JSONDecodeError, TypeError):
             pass
 
-    config_key = (config.openai_api_key or "").strip()
-    return "" if config_key in placeholders else config_key
+    return ""
 
 
 def _extract_output_text(payload: dict) -> str:

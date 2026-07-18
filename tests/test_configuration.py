@@ -75,6 +75,15 @@ class ConfigurationTests(unittest.TestCase):
             saved = json.loads(config_path.read_text(encoding="utf-8"))
             self.assertNotIn("openai_api_key", saved)
 
+    def test_api_key_in_config_object_is_ignored(self) -> None:
+        config = configuration.Configuration(
+            openai_enabled=True,
+            openai_api_key="sk-must-not-be-used",
+        )
+        with patch.object(config, "secrets_path", return_value=Path("/no/secrets.json")):
+            with patch.dict("os.environ", {}, clear=True):
+                self.assertEqual(resolve_openai_api_key(config), "")
+
     def test_invalid_json_falls_back_to_defaults(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
