@@ -6,3 +6,7 @@ dist/
 *.egg-info/
 .pytest_cache/
 .coverage
+.env
+.env.*
+secrets.json
+**/secrets.json
