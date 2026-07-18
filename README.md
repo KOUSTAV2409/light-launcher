@@ -270,11 +270,22 @@ See `VALIDATION.md` for the real-user validation workflow before paid features.
 - Power actions may need polkit permissions
 - OpenAI web search uses **your** API quota (Responses API + web_search tool)
 
+## Acknowledgments
+
+Light exists because of **[Snap](https://github.com/techrisdev/Snap)** by
+**[techrisdev](https://github.com/techrisdev)** — an open-source macOS launcher
+that showed how a clean search-first architecture can feel fast and thoughtful.
+
+This Linux project is a new implementation (Python + GTK), not a line-for-line
+port, but it was openly inspired by Snap’s structure and product ideas:
+search providers, actions, configuration, and the overall launcher workflow.
+
+Thank you, techrisdev, for releasing Snap under the GPL and sharing that work
+with the community.
+
 ## License
 
 Copyright (C) 2026 Koustav Ganguly (KOUSTAV2409).
 
 Light is free software under the **GNU General Public License v3** (or later).
 See [`LICENSE`](LICENSE) for the full terms.
-
-Inspired by ideas from [Snap](https://github.com/techrisdev/Snap) (also GPL-3.0).
